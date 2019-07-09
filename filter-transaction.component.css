@@ -1,0 +1,41 @@
+.MAT_FILD_WDH
+{
+  width:95%;
+}
+.MAT-SEL-FONT{
+    font-size:12px!important;
+}
+.FX-FILT-ICN
+  {
+      margin-top: 4px;
+      cursor: pointer;
+  }
+  .FX-FILT-CAP
+  {
+      margin-top:-5px;
+      font-size:8pt;color: rgb(245,144,0);
+ }
+::ng-deep .mat-form-field .mat-form-field-label {
+    color:rgb(192, 189, 189)!important;
+    font-size:12px!important;
+    margin-top:10px;
+}
+
+.MAT-BTN-BAK{
+    background-color:white;
+    color: #ff8e00;
+    border: 1px solid  #ff8e00;
+    border-radius: 1px;
+    padding: 1px 32px;
+    }
+    .MAT-BTN-SAV{
+    background-color:orange;
+    color: white;
+    border: 1px solid  #ff8e00;
+    border-radius: 1px;  
+    padding: 1px 32px;
+    }
+    .mat-datepicker-content .mat-calendar {
+        width: 235px!important;
+        height: 289px!important;
+    }

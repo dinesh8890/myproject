@@ -1,0 +1,21 @@
+.container{
+    width:100%;
+}
+.GRPPROP-CAP{
+    font-family: Roboto;
+    font-size:13px;
+}
+.MAT_FILD_WDH
+{
+  width:90%;
+}
+::ng-deep .mat-form-field .mat-form-field-label 
+{
+    color:rgb(192, 189, 189)!important;
+    font-size:12px!important;
+    margin-top: 8px;
+}
+::ng-deep .mat-form-field-underline 
+{
+    color:orange!important;
+}

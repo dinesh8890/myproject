@@ -1,0 +1,125 @@
+.Header
+{
+    height:100px;
+    background-color: #F7F7F7;
+}
+.ICON-Style1
+{
+    cursor: pointer;
+    color:  gray;
+    font-size: 18px;
+}
+.ICON-CAP1
+{
+    color: gray;
+    font-size: 11px;
+    cursor: pointer;
+    margin-top:-2px;
+}
+.ICON-Style
+{
+    cursor: pointer;
+    color: orange;
+    font-size: 18px;
+}
+.ICON-CAP
+{
+    color: orange;
+    font-size: 11px;
+    cursor: pointer;
+    margin-top:-2px;
+}
+.Sel-Fil-Cap
+{
+    font-size: 12px;
+    font-family:Roboto;
+    color:rgb(70, 70, 218);
+    cursor: pointer;
+}
+.txt:hover 
+{
+    text-decoration: underline;
+}
+.ICN_SIDE_BDR
+{
+    border-left:1px solid #ccc ;
+    max-height: 41px;
+    margin-top: 5px;
+}
+.MAT_FILD_WDH
+{
+    width:90%;
+}
+.mat-header-row
+{
+    min-height: 40px!important;
+}
+.mat-row
+{
+    min-height:30px;
+    font-family:Verdana,sans-serif;
+    font-size:11px;
+    color:#000000;
+}
+.mat-cell
+{
+    height:30px;
+    font-family:Verdana,sans-serif;
+    font-size:11px; 
+    color:#000000
+}
+.mat-header-cell
+{
+    color:#000000;
+    font-size:12px;
+    font-family:Roboto;
+    font-weight:Medium;
+    background-color: #F4F4F4;
+    width:1326px;
+    height:41px;
+}
+::ng-deep .mat-checkbox .mat-checkbox-frame
+{
+    border-color: rgb(255,144,0);
+}
+::ng-deep .mat-checkbox-checked .mat-checkbox-background
+{
+    background-color: rgb(255,144,0) !important;
+}
+.FX-BDR-FIX
+{
+position: fixed; 
+bottom:0;
+left:0;
+width: 100%;
+background-color: #000000;
+margin-left : auto;
+margin-right : auto;
+height: auto;
+padding:11px;
+opacity: 0.6;
+}
+.MAT-BTN-BAK
+{
+background-color: #000000;
+color: #ff8e00;
+border: 1px solid  #ff8e00;
+border-radius: 1px;
+height: 32.71px;
+width:61px;
+Opacity:100%!important;
+font-size: 14px;
+font-family: Roboto;
+line-height: 30px;
+}
+.Create_BTN
+  {
+  background-color:#FF8E00;
+  color: #FBFBFB;  
+  border-radius: 30px;
+  font-family: Roboto;
+  font-size: 14px;
+  height: 29px;
+  line-height: 30px;
+  width: 130px;
+  }

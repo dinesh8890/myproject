@@ -1,0 +1,77 @@
+<!--First card start-->
+<div class="container" fxLayout fxLayout.xs="column" fxLayoutGap="20px" fxLayoutAlign="end" fxLayoutGap.xs="0">
+  <div fxflex="2%">
+    <button mat-raised-button class="Create_BTN" (click)="createNew()" style="margin-top: 10px;"><svg-icon src="../assets/Images/demo/Add.svg"></svg-icon> {{'CreateOpeningBalance'|translate}}</button>
+  </div>
+</div><br>
+<!--First card end-->
+<!--Second card start-->
+<div class="container FX-MLR-TY" fxLaout="column" fxLayoutWrap fxLayoutGap="0.2">
+  <div fxFlex="3%">
+    <app-filter-openingbalance (Openbalancefilter)="selecteddata($event)"></app-filter-openingbalance>
+  </div>
+  <div fxFlex={{Lenght_Date}} *ngIf="Filter_Flag && Deselect_date" style="margin-top:10px">
+    <span class="Sel-Fil-Cap txt" (click)="Deselect_Date()">{{Date}}&nbsp;&#x2716;</span>
+  </div>
+  <div fxFlex="64%">&nbsp;</div>
+  <div fxFlex="2%" class="ICN_SIDE_BDR">&nbsp;</div>
+  <div fxFlex="30%">
+    <mat-form-field class="MAT_FILD_WDH" >
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+      <mat-icon matSuffix style="color:orange;">search</mat-icon>
+    </mat-form-field>
+  </div>
+  <div fxFlex="1%">
+    <app-more-option [moreoptcolumns]="getMoreOptionColmns()"></app-more-option>
+  </div>
+</div>
+<!--Second card end-->
+<!--Third card start-->
+<mat-table #table [dataSource]="dataSource" matSort>
+  <ng-container matColumnDef="Company">
+    <mat-header-cell *matHeaderCellDef  mat-sort-header>{{'Company'|translate}}</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+    {{element.Company}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="Invoice No">
+    <mat-header-cell *matHeaderCellDef  mat-sort-header>{{'InvoiceNo'|translate}}</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+    {{element.InvoiceNo}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="Invoice Date">
+    <mat-header-cell *matHeaderCellDef  mat-sort-header>{{'InvoiceDate'|translate}}</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+    {{element.InvoiceDate}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="Invoice Value">
+    <mat-header-cell *matHeaderCellDef  mat-sort-header>{{'InvoiceValue'|translate}}</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+    {{element.InvoiceValue}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="Description">
+    <mat-header-cell *matHeaderCellDef  mat-sort-header>{{'Description'|translate}}</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+    {{element.Description}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="Actions" >
+    <mat-header-cell *matHeaderCellDef>{{'Actions'|translate}}</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      <mat-form-field class="FX-WDH">
+        <mat-select  [(ngModel)]="element.Actions" style="font-size:12px!important;" (selectionChange)="changeaction($event.value)">
+          <mat-option *ngFor="let a of activeList" [value]="a">{{a}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns|toggleColumns:columns"></mat-header-row>
+  <mat-row *matRowDef="let element; columns: displayedColumns|toggleColumns:columns"></mat-row>
+</mat-table>
+<mat-paginator [length]="5" [pageSize]="5" [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons>
+</mat-paginator>
+<!--Third card end-->

@@ -1,0 +1,73 @@
+<div class="header">
+  <h3>Fx Receivables</h3>
+</div>
+
+<div id="side-menu">
+  <div>
+    <aside class="sidenav" (mouseover)="mouseOverMenuList()" (mouseout)="mouseOutMenuList()" id="mySidenav">
+      <div class="sidenav-container">
+
+        <ul class="gui-controls" style="padding:0px">
+          <li class="collapse-li">
+            <span class="icon-shuffle shuffle-ico" *ngIf="isSidenavMenuOpened"></span>
+            <span class="fc-text" *ngIf="!isSidenavMenuOpened">FX POS</span>
+            <button id="rimage" type="button" (click)="sidenavToggle()" class="toggle-button-last pull-right">
+              <span class="icon-shuffle shuffle-ico"></span>
+            </button>
+          </li>
+        </ul>
+        <ul>
+          <div class="spinner-icon" *ngIf="!menutree.length">
+            <i class="fa fa-spinner fa-spin"></i>
+          </div>
+        </ul>
+
+        <ul class="gui-controls scroll">
+          <li class="gui-folder" *ngFor="let m of menutree; let i=index">
+            <a id="{{m.NAME}}">
+              <div class="gui-icon">
+                <em class="{{m.ICON}}"></em>
+              </div>
+              <label *ngIf="m.CHILDREN" #parent (click)="changeParentIcon(parent)" class="parent-label title pointer"
+                for="folder{{m.NAME+i}}">{{m.NAME}}</label>
+              <span *ngIf="m.CHILDREN"
+                class="{{m.EXPAND ? 'icon-angle-arrow-down' : 'icon-angle-arrow-pointing-to-right'}} rightview-arrow"></span>
+              <label *ngIf="!m.CHILDREN" (click)="menuChildClick(m.CHILDREN ? false : true)" routerLink="{{m.URL}}"
+                class="parent-label title pointer">{{m.NAME}}</label>
+            </a>
+            <input type="checkbox" id="folder{{m.NAME+i}}" [checked]="m.EXPAND" />
+            <ul *ngIf="m.CHILDREN" [class.hide]="isSidenavMenuOpened">
+              <li class="child-list" *ngFor="let m1 of m.CHILDREN">
+                <a class="{{currentBaseUrl == m1.URL ? 'active' : ''}} child-a">
+                  <label class="child-label" for="folder{{m1.NAME+i}}" #label (click)="toggleMenuTreeIcon(label)">
+                    <div class="multilevel" *ngIf="m1.CHILDREN">
+                      <span class="title child" (click)="menuChildClick(m1.CHILDREN ? false : true)"
+                        id="{{m1.NAME}}">{{m1.NAME}}</span>
+                      <span
+                        class="{{m.EXPAND ? 'icon-angle-arrow-down' : 'icon-angle-arrow-pointing-to-right'}} rightview-arrow1"></span>
+                    </div>
+                    <span *ngIf="!m1.CHILDREN" class="title child"
+                      (click)="menuChildClick(m1.CHILDREN ? false : true,$event)"
+                      routerLink="{{m1.URL}}">{{m1.NAME}}</span>
+                  </label>
+                </a>
+                <input type="checkbox" id="folder{{m1.NAME+i}}" [checked]="m.EXPAND" />
+                <ul *ngIf="m1.CHILDREN">
+                  <li class="sub-child-list" *ngFor="let m2 of m1.CHILDREN">
+                    <a class="{{currentBaseUrl == m2.URL ? 'active' : ''}} sub-child-a"
+                      (click)="menuChildClick(true, $event, m2.URL,m.NAME)" routerLink="{{m2.URL}}">
+                      <span class="title sub-child">{{ m2.NAME}}</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+  <div class="outer">
+    <router-outlet></router-outlet>
+  </div>
+</div>

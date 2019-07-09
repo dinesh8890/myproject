@@ -1,0 +1,44 @@
+<div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2">
+  <div fxFlex="55%">
+    <mat-form-field class="MAT_FILD_WDH">
+      <input type="text" placeholder="{{'Company'|translate}}" matInput [formControl]="CMPCNTRL" [matAutocomplete]="auto3" class="FX-FNT_SZ" [(ngModel)]="_Companyname">
+      <mat-icon *ngIf="!_Companyname"  matSuffix class="icon-search">search</mat-icon>
+      <mat-autocomplete #auto3="matAutocomplete"  style="width: 500px!important;">
+              <mat-option *ngFor="let option of FILTCMPLIST|async" [value]="option.comnam" style="font-size:13px;">
+                      {{option.comnam}}
+              </mat-option>
+      </mat-autocomplete>
+      <button mat-button *ngIf="_Companyname" matSuffix mat-icon-button aria-label="Clear" (click)="_Companyname=''">
+      <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field> 
+  </div>  
+  <div fxFlex="55%" >
+    <mat-form-field class="MAT_FILD_WDH">
+      <input matInput placeholder="{{'Balance' | translate}}">
+    </mat-form-field>
+  </div>
+  <div fxFlex="55%" >
+    <mat-form-field class="MAT_FILD_WDH">
+      <mat-chip-list  #chipList>
+      <mat-chip class="chip" *ngFor="let mailid of Email" [selectable]="selectable"
+                      [removable]="removable" (removed)="remove(mailid)">
+              {{mailid.name}}
+              <mat-icon matChipRemove *ngIf="removable" class="Mat-Icon-Cancel">cancel</mat-icon>
+      </mat-chip>
+      <input placeholder="{{'Email'|translate}}"
+              [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="addOnBlur"
+              (matChipInputTokenEnd)="add($event)" class="FX-FNT_SZ"
+              style="margin-top: 5px;">
+      </mat-chip-list>
+    </mat-form-field>
+  </div>
+  <div fxFlex="55%">
+      <mat-form-field class="MAT_FILD_WDH">
+          <input matInput  maxlength="1000" placeholder="Billing Address" [(ngModel)]="Billaddress" readonly class="FX-FNT_SZ">
+          <mat-icon matSuffix (click)="opendescription(Billaddress,'Billaddress')" style="cursor: pointer;color:gainsboro;">notes</mat-icon>
+  </mat-form-field>
+  </div>              
+</div>

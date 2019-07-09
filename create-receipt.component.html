@@ -1,0 +1,377 @@
+<!--First card start-->
+<div class="Header">
+  <div class="container" fxLaout="column" fxLayoutWrap fxLayoutGap="0.2">
+    <div fxFlex="15%">
+      <h1 class="MBZ" style="margin-left: 17px;">{{'Create-Receipt'|translate}}</h1>
+    </div>
+    <div fxFlex="85%">&nbsp;</div>
+    <div fxFlex="4%" style=" margin-left: 34px!important;">
+        <mat-icon matTooltip="{{'RecentReceipts'|translate}}" [mdePopoverTriggerFor]="appPopover" mdePopoverTriggerOn="click" style="cursor: pointer;margin-top: 10px;">history</mat-icon>
+        <p class="History_Cap">{{'History'|translate}}</p>
+        <mde-popover #appPopover="mdePopover" [mdePopoverOverlapTrigger]="false" [mdePopoverCloseOnClick]="false"  mdePopoverArrowColor="#FFFFFF">
+            <mat-card class="Mat-Card-Style" style="max-width: 600px;min-width: 400px;max-height:300px;">
+                      <div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2">
+                              <div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0" class="History_HDR">
+                                      <div fxFlex="20%">
+                                              <span style="font-size: 14px;font-family: Roboto,Medium;color:white">{{'RecentReceipts'|translate}}</span>
+                                      </div>
+                                      <div fxFlex="75%">&nbsp;</div>
+                                      <div fxFlex="5%">
+                                              <mat-icon matTooltip="Close" (click)="Close(0)" style="margin-top: 10px;margin-left:-8px;color:white">clear</mat-icon>
+                                      </div>
+                              </div>
+                      </div>
+                <div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2">
+                    <div fxFlex="2%">
+                        &nbsp;
+                      </div>
+                <div fxFlex="96%" class="TBL-CNTAINR">
+                    <mat-table [dataSource]="RecentReceipt_DS"> 
+
+                        <ng-container matColumnDef="Company">
+                          <mat-header-cell *matHeaderCellDef>{{'Company'|translate}}</mat-header-cell>
+                          <mat-cell *matCellDef="let element">{{element.Company}} </mat-cell>
+                        </ng-container>
+                                
+                        <ng-container matColumnDef="PaymentDate">
+                          <mat-header-cell *matHeaderCellDef>{{'PaymentDate'|translate}}</mat-header-cell>
+                          <mat-cell *matCellDef="let element">{{element.PaymentDate}} </mat-cell>                                    
+                        </ng-container>
+                                          
+                        <ng-container matColumnDef="ReceiptNo">
+                          <mat-header-cell *matHeaderCellDef>{{'ReceiptNo'|translate}}</mat-header-cell>
+                          <mat-cell *matCellDef="let element">{{element.ReceiptNo}} </mat-cell>
+                        </ng-container>
+      
+                        <ng-container matColumnDef="Transaction">
+                          <mat-header-cell *matHeaderCellDef>{{'TransactionStatus'|translate}}</mat-header-cell>
+                          <mat-cell *matCellDef="let element">{{element.Transaction}} </mat-cell>
+                        </ng-container>                           
+                                     
+                        <mat-header-row *matHeaderRowDef="displayedRecentColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedRecentColumns"></mat-row>
+                      </mat-table>     
+                  </div>
+                  <div fxFlex="2%">
+                      &nbsp;
+                    </div>
+                </div>
+                <div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2">
+                    <div fxFlex="2%">
+                        &nbsp;
+                      </div>
+                      <div fxFlex="25%">
+                          <nav>
+                              <a [routerLink]="['/receipt']" style="font-size:10px;font-family: Roboto;color:rgb(70, 70, 218);cursor: pointer;">{{'ViewMore'|translate}}</a>
+                          </nav>
+                      </div>
+                </div>
+            </mat-card>
+        </mde-popover>
+</div>
+    
+      <div fxFlex="3%">
+        <mat-icon matTooltip="{{'Close'|translate}}" (click)="Back()" style="margin-top: 10px;margin-left:-8px;">clear</mat-icon>
+        <p class="Close">{{'Close'|translate}}</p>
+      </div>
+  </div>
+  <div style="margin-top: -19px;">
+    <app-group-property></app-group-property>
+  </div>
+</div>
+<!--First card end-->
+<!--Second card start-->
+<div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2">
+  <div fxFlex="25%">
+    <h2 class="Heading">{{'Basic'|translate}}</h2>
+  </div>
+</div>
+<!--Second card end-->
+<!--Third card start-->
+<div class="FX-MLR-TY">
+  <div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2">
+    <div fxFlex="16%">
+      <mat-form-field class="MAT_FILD_WDH">
+        <input type="text" placeholder="{{'Company'|translate}}" matInput [formControl]="CMPCNTRL" [matAutocomplete]="auto3" class="FX-FNT_SZ" [(ngModel)]="_Companyname">
+        <mat-icon *ngIf="!_Companyname"  matSuffix class="icon-search">search</mat-icon>
+        <mat-autocomplete #auto3="matAutocomplete"  style="width: 500px!important;">
+                <mat-option *ngFor="let option of FILTCMPLIST|async" [value]="option.comnam" style="font-size:13px;">
+                        {{option.comnam}}
+                </mat-option>
+        </mat-autocomplete>
+        <button mat-button *ngIf="_Companyname" matSuffix mat-icon-button aria-label="Clear" (click)="_Companyname=''">
+        <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field> 
+    </div>
+    <div fxFlex="16%">
+      <mat-form-field class="MAT_FILD_WDH">
+        <mat-select placeholder="{{'ReceiptType'|translate}}" class="FX-FNT_SZ">          
+        </mat-select>
+      </mat-form-field>
+    </div> 
+    <div fxFlex="16%">
+      <mat-form-field class="MAT_FILD_WDH">
+        <input matInput [matDatepicker]="pickerDate" placeholder="{{'TransactionDate'|translate}}" readonly="true" (click)="pickerDate.open()">
+        <mat-datepicker-toggle matSuffix [for]="pickerDate"></mat-datepicker-toggle>
+        <mat-datepicker #pickerDate></mat-datepicker>
+      </mat-form-field>
+    </div> 
+    <div fxFlex="16%">
+      <mat-form-field class="MAT_FILD_WDH">
+        <mat-select placeholder="{{'TaxType'|translate}}" class="FX-FNT_SZ">          
+        </mat-select>
+      </mat-form-field>
+    </div>  
+    <div fxFlex="16%">&nbsp;</div>
+    <div fxFlex="16%">&nbsp;</div>
+    <div fxFlex="16%">&nbsp;</div>
+    <div fxFlex="16%">
+            <h2 class="Oustanding">{{'Outstanding'|translate}}</h2>
+            <h2 class="Oustanding">0</h2>
+    </div>  
+  </div>  
+  <div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2"> 
+    <div fxFlex="16%">
+      <mat-form-field class="MAT_FILD_WDH">
+        <mat-select placeholder="{{'Currency'|translate}}" class="FX-FNT_SZ">          
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="14%" >
+      <mat-form-field class="MAT_FILD_WDH">
+        <input matInput placeholder="{{'ExchangeRate' | translate}}">
+      </mat-form-field>
+    </div>
+    <div fxFlex="16%">
+      <mat-checkbox style="line-height: 57px!important;" (change)="AutoCheck($event)">
+        <span class="FX-AUTO-CHKBX">{{'AutoAllocateOfReceipt'|translate}}</span>
+      </mat-checkbox>
+    </div>
+    
+  </div>
+</div>
+<!--Third card end-->
+<!--Fourth card start-->
+<div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2">
+  <div fxFlex="25%">
+    <h2 class="Heading">{{'Payment-Details'|translate}}</h2>
+  </div>
+</div>
+<!--Fourth card end-->
+<!--Fifth card start-->
+<div class="FX-MLR-TY">
+  <div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2">
+    <div fxFlex="16%">
+      <mat-form-field class="MAT_FILD_WDH">
+        <mat-select placeholder="{{'ModeofPayment'|translate}}" style="font-size:12px!important;" (selectionChange)="changePaymentMode($event.value)">
+          <mat-option value="1">Cash</mat-option>
+          <mat-option value="2">Cheque</mat-option>
+          <mat-option value="3">Credit Card</mat-option>
+          <mat-option value="4">Bank Transfer</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="16%" *ngIf="Cash">
+      <mat-form-field class="MAT_FILD_WDH">
+        <input matInput placeholder="{{'ReferenceNo'|translate}}">
+      </mat-form-field>
+    </div>
+    <div fxFlex="16%" *ngIf="Cheque">
+      <mat-form-field class="MAT_FILD_WDH">
+        <mat-select placeholder="{{'DepositTo'|translate}}" class="FX-FNT_SZ">          
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="16%" *ngIf="Cheque">
+      <mat-form-field class="MAT_FILD_WDH">
+        <input matInput placeholder="{{'ChequeNo'|translate}}">
+      </mat-form-field>
+    </div>
+    <div fxFlex="16%" *ngIf="Cheque">
+      <mat-form-field class="MAT_FILD_WDH">
+        <input matInput [matDatepicker]="pickerChequeDate" placeholder="{{'ChequeDate'|translate}}" readonly="true" (click)="pickerChequeDate.open()">
+        <mat-datepicker-toggle matSuffix [for]="pickerChequeDate"></mat-datepicker-toggle>
+        <mat-datepicker #pickerChequeDate></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div fxFlex="16%" *ngIf="Card">
+      <mat-form-field class="MAT_FILD_WDH">
+        <mat-select placeholder="{{'CreditCardCompany'|translate}}" class="FX-FNT_SZ">          
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="16%" *ngIf="Card">
+      <mat-form-field class="MAT_FILD_WDH">
+        <mat-select placeholder="{{'CardType'|translate}}" class="FX-FNT_SZ">          
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="16%" *ngIf="Card">
+      <mat-form-field class="MAT_FILD_WDH">
+        <mat-select placeholder="{{'CardNo'|translate}}" class="FX-FNT_SZ">          
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxFlex="16%" *ngIf="Bank">
+      <mat-form-field class="MAT_FILD_WDH">
+        <input matInput placeholder="{{'NEFTRefNo'|translate}}">
+      </mat-form-field>
+    </div>
+    <div fxFlex="16%" *ngIf="Bank">
+      <mat-form-field class="MAT_FILD_WDH">
+        <input matInput placeholder="{{'DepositNo'|translate}}">
+      </mat-form-field>
+    </div>
+    <div fxFlex="16%" *ngIf="Bank">
+      <mat-form-field class="MAT_FILD_WDH">
+        <input matInput placeholder="{{'BankBranchName'|translate}}">
+      </mat-form-field>
+    </div>
+  </div>
+</div>
+<!--Fifth card end-->
+<!--Sixth card start-->
+<div class="container" fxLayout fxLayout.xs="column" fxLayoutGap="20px" fxLayoutAlign="end" fxLayoutGap.xs="0">    
+  <div fxFlex="15%">
+    <mat-form-field class="FX-WDH">
+      <mat-select placeholder="{{'Amountsare'|translate}}" style="font-size:12px!important;">
+        <mat-option *ngFor="let typ of TaxInclude" [value]="typ.value">
+                {{typ.viewValue}}
+        </mat-option>
+      </mat-select>   
+    </mat-form-field>
+  </div>
+  <div fxFlex="5%" style="margin-left:-12px">
+    <app-more-option [moreoptcolumns]="getMoreOptionColmns()"></app-more-option>
+  </div>        
+</div>
+<!--Sixth card end-->
+<!--Seventh card start-->
+<div class="FX-MLR-TY">
+  <mat-table #table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="Receipt Date">
+      <mat-header-cell *matHeaderCellDef>{{'ReceiptDate'|translate}}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-form-field class="MAT_CELL_WDH">
+        <input matInput [matDatepicker]="picker1" [(ngModel)]="element.InvoiceDate" (click)="picker1.open()" [readonly]="true">
+        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1 >{{element.ReceiptDate}}</mat-datepicker>
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Description"  >
+      <mat-header-cell *matHeaderCellDef>{{'Description'|translate}}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-form-field class="MAT_FILD_WDH">
+                <input matInput  maxlength="1000"  [(ngModel)]="Billaddress" readonly class="FX-FNT_SZ">
+                <mat-icon matSuffix (click)="opendescription(Billaddress,'Billaddress')" style="cursor: pointer;color:gainsboro;">notes</mat-icon>
+        </mat-form-field>                                                                
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Currency Amount" >
+      <mat-header-cell *matHeaderCellDef>{{'CurrencyAmount'|translate}}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-form-field  class="MAT_CELL_WDH">
+          <input matInput value="{{element.CurrencyAmount}}">
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Local Amount">
+      <mat-header-cell *matHeaderCellDef>{{'LocalAmount'|translate}}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-form-field  class="MAT_CELL_WDH">
+          <input matInput value="{{element.LocalAmount}}">
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Commission %">
+      <mat-header-cell *matHeaderCellDef>{{'Commission%'|translate}}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-form-field  class="MAT_CELL_WDH">
+          <input matInput value="{{element.Commission}}">
+        </mat-form-field>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Tax">
+      <mat-header-cell *matHeaderCellDef>{{'Tax'|translate}}</mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <mat-form-field  class="MAT_CELL_WDH">
+          <mat-select  [(ngModel)]="element.Tax" style="font-size:12px!important;">
+          </mat-select>
+        </mat-form-field>
+      </mat-cell> 
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns|toggleColumns:columns"></mat-header-row>
+    <mat-row *matRowDef="let element; columns: displayedColumns|toggleColumns:columns"></mat-row>
+  </mat-table>
+  <mat-paginator [length]="5" [pageSize]="5" [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons>
+  </mat-paginator>
+</div>
+<!--Seventh card end-->
+<!--Eighth card start-->
+<br>
+<div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2">
+  <div fxFlex="61%">
+    <div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2">
+      <div *ngIf="Outstand_Debits_Visible">
+        <div fxFlex="20%">
+          <h2 class="Heading">Outstanding Debits</h2>
+        </div>
+        <div fxFlex="3%" *ngIf="!Outstanding_Debits_flag">
+          <mat-icon matSuffix class="icon-search" style="margin-top:8px;cursor: pointer;"(click)="Outstanding_Debit()">expand_more</mat-icon>
+        </div>
+        <div fxFlex="3%" *ngIf="Outstanding_Debits_flag">
+          <mat-icon matSuffix class="icon-search" style="margin-top:8px;cursor: pointer;"(click)="Outstanding_Debit_less()">expand_less</mat-icon>
+        </div>
+      </div>
+      <div class="FX-MLR-TY" *ngIf="Outstanding_Debits_flag">
+        <app-outstanding-debit></app-outstanding-debit>
+      </div>
+      <div *ngIf="Outstand_Credits_Visible">
+        <div fxFlex="20%">
+          <h2 class="Heading">Outstanding Credits</h2>
+        </div>
+        <div fxFlex="3%" *ngIf="!Outstanding_Credits_flag">
+          <mat-icon matSuffix class="icon-search" style="margin-top:8px;cursor: pointer;"(click)="Outstanding_Credit()">expand_more</mat-icon>
+        </div>
+        <div fxFlex="3%" *ngIf="Outstanding_Credits_flag">
+          <mat-icon matSuffix class="icon-search" style="margin-top:8px;cursor: pointer;"(click)="Outstanding_Credit_less()">expand_less</mat-icon>
+        </div>
+      </div>    
+      <div class="FX-MLR-TY" *ngIf="Outstanding_Credits_flag">          
+        <app-outstanding-credit></app-outstanding-credit>            
+      </div>
+    </div>
+  </div>
+  <div fxFlex="2%">&nbsp;</div>
+  <div fxFlex="35%">
+    <!-- <app-transaction-total></app-transaction-total> -->
+  </div>
+</div>
+<!--Eighth card end-->
+<!--Ninth card start-->
+<br><br><br>
+<div class="container FX-BDR-FIX" fxLayout fxLayout.xs="column" fxLayoutGap="20px" fxLayoutAlign="end" fxLayoutGap.xs="0"  >
+  <div fxflex="9%" >
+    <button mat-raised-button class="MAT-BTN-BAK" (click)="Back()">Back</button>
+  </div>
+  <div fxflex="7%" >
+    <button mat-raised-button class="MAT-BTN-SAV" (click)="SaveReceiptEntry()">Save</button>
+  </div> 
+
+  <div fxflex="5%" >
+      <button mat-raised-button class="MAT-BTN-SAVNEW">Save & New</button>
+  </div>
+  <div fxflex="3%" >
+    &nbsp;
+  </div>
+</div>
+<!--Ninth card end-->

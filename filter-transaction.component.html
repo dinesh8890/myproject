@@ -1,0 +1,90 @@
+<svg-icon [mdePopoverTriggerFor]="appPopover" mdePopoverTriggerOn="click" class="FX-FILT-ICN" src="/assets/Images/demo/Filter.svg"></svg-icon><p [mdePopoverTriggerFor]="appPopover" mdePopoverTriggerOn="click" class="FX-FILT-CAP">{{'Filter'|translate}}</p>     
+<mde-popover #appPopover="mdePopover" [mdePopoverOverlapTrigger]="false" [mdePopoverCloseOnClick]="false" [mdePopoverOffsetX]="-16" [mdePopoverOffsetY]="-10" [mdePopoverArrowOffsetX]="58" mdePopoverArrowColor="#FFFFFF">     
+  <mat-card class="Mat-Card-Style" style="max-width: 320px">
+      <div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2">
+          <div fxFlex="50%">
+              <mat-form-field class="MAT_FILD_WDH">
+                  <mat-select placeholder="{{'TransactionType'|translate}}" [(value)]="selectedType" class="MAT-SEL-FONT">
+                      <mat-option value="1">{{'AllTransaction'|translate}}</mat-option>
+                      <mat-option value="2">{{'Invoice'|translate}}</mat-option>
+                      <mat-option value="3">{{'Receipts'|translate}}</mat-option>
+                      <mat-option value="4">{{'CreditNote'|translate}}</mat-option>
+                  </mat-select>
+              </mat-form-field>
+          </div>
+      </div>
+      <div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2">
+          <div fxFlex="50%" >
+              <mat-form-field class="MAT_FILD_WDH">
+                  <mat-select placeholder="{{'TransactionStatus'|translate}}" [(value)]="selectedstatus" class="MAT-SEL-FONT" >
+                          <mat-option value="1">{{'AllStatuses'|translate}}</mat-option>
+                          <mat-option value="2">{{'Voided'|translate}}</mat-option>
+                          <mat-option value="3">{{'PartiallyMatched'|translate}}</mat-option>
+                          <mat-option value="4">{{'Matched'|translate}}</mat-option>
+                  </mat-select>
+              </mat-form-field>
+          </div>                
+      </div>
+      <div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2">
+          <div fxFlex="40%" >
+              <mat-form-field class="MAT_FILD_WDH">
+                  <mat-select placeholder="{{'Date'|translate}}" [(value)]="selectedDate" class="MAT-SEL-FONT" (selectionChange)="DateSelected($event)">
+                      <mat-option value="1">{{'Thismonth'|translate}}</mat-option>
+                      <mat-option value="2">{{'Custom'|translate}}</mat-option>
+                      <mat-option value="3">{{'Today'|translate}}</mat-option>
+                      <mat-option value="4">{{'Yesterday'|translate}}</mat-option>
+                      <mat-option value="5">{{'Thisweek'|translate}}</mat-option>                     
+                      <mat-option value="6">{{'Last365days'|translate}}</mat-option>
+                      <mat-option value="7">{{'Thisquarter'|translate}}</mat-option>
+                      <mat-option value="8">{{'Thisfiscalquarter'|translate}}</mat-option>
+                      <mat-option value="9">{{'Thisyear'|translate}}</mat-option>
+                      <mat-option value="10">{{'Thisfinancialyear'|translate}}</mat-option>
+                      <mat-option value="11">{{'Lastweek'|translate}}</mat-option>
+                      <mat-option value="12">{{'Lastmonth'|translate}}</mat-option>
+                      <mat-option value="13">{{'Lastquarter'|translate}}</mat-option>
+                      <mat-option value="14">{{'Lastfiscalquarter'|translate}}</mat-option>
+                      <mat-option value="15">{{'Lastyear'|translate}}</mat-option>
+                      <mat-option value="16">{{'Lastfinancialyear'|translate}}</mat-option>
+                      <mat-option value="17">{{'Alldates'|translate}}</mat-option>
+                  </mat-select>
+              </mat-form-field>
+          </div>
+          <div fxFlex="30%">
+              <mat-form-field class="MAT_FILD_WDH">
+                  <mat-datepicker-toggle matSuffix [for]="frompicker"></mat-datepicker-toggle>
+                  <mat-datepicker #frompicker></mat-datepicker>
+                  <input matInput [matDatepicker]="frompicker" [formControl] = "fromDateDay"  placeholder="{{'From'|translate}}" class="MAT-SEL-FONT">
+              </mat-form-field>
+          </div>
+          <div fxFlex="30%">
+              <mat-form-field class="MAT_FILD_WDH">
+                  <mat-datepicker-toggle matSuffix [for]="Topicker"></mat-datepicker-toggle>
+                  <mat-datepicker #Topicker></mat-datepicker>
+                  <input matInput [matDatepicker]="Topicker" [formControl] = "toDateDay" placeholder="{{'To'|translate}}" class="MAT-SEL-FONT">
+              </mat-form-field>
+          </div>
+      </div>
+      <div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2">
+          <div fxFlex="60%" >
+              <mat-form-field class="MAT_FILD_WDH">
+                  <mat-select placeholder="{{'Company'|translate}}" [(value)]="selectedCustomer" class="MAT-SEL-FONT">
+                      <mat-option value="1">{{'AllCustomer'|translate}}</mat-option>
+                  </mat-select>
+              </mat-form-field>
+          </div>
+      </div>
+      <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="end" fxLayoutGap="10px" fxLayoutGap.xs="0"> 
+          <div fxFlex="5%">&nbsp;</div>
+          <div fxFlex="35%">
+              <button  mat-raised-button class="MAT-BTN-BAK" (click)="Reset()">{{'Reset'|translate}}</button>
+          </div>
+          <div fxFlex="20%"></div>
+          <div fxFlex="35%">
+              <button mat-raised-button class="MAT-BTN-SAV"  (click)="Applyfilt(0)">{{'Apply'|translate}}</button>
+          </div>
+          <div fxFlex="5%">&nbsp;</div>
+      </div>
+  </mat-card>    
+</mde-popover> 
+
+

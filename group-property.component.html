@@ -1,0 +1,58 @@
+<div>
+        <div class="container" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.2" style="max-height:50px!important;">
+                <div fxFlex="2%">
+                        &nbsp;
+                </div>
+                <div fxFlex="16%">
+                        <br>
+                        <mat-radio-group>
+                                <mat-radio-button value="1" checked="true" class="GRPPROP-CAP">{{'Group'|translate}}
+                                </mat-radio-button>
+                                <mat-radio-button value="2" class="FXRDLft GRPPROP-CAP">{{'Property'|translate}}
+                                </mat-radio-button>
+                        </mat-radio-group>
+                </div>
+                <div fxFlex="17%">
+                        <form [formGroup]="form">
+                                <mat-form-field class="MAT_FILD_WDH">
+                                        <mat-select placeholder="Group" 
+                                                (selectionChange)="FetchPropertyDetails($event.value)"
+                                                formControlName="GroupInfo" class="FX-FNT_SZ">
+                                                <mat-option *ngFor="let a of _Group" [value]="a.groupcode">
+                                                        {{a.groupname}}</mat-option>
+                                        </mat-select>
+                                </mat-form-field>
+                                <div style="margin-top: -15px"
+                                        *ngIf="form.controls['GroupInfo'].touched && !form.controls['GroupInfo'].valid"
+                                        class="bounce">
+                                        <mat-error *ngIf="form.controls['GroupInfo'].hasError('required') "
+                                                style="font-size: 13px; font-family: roboto">
+                                                Group is required
+                                        </mat-error>
+                                </div>
+                        </form>
+                </div>
+                <div fxFlex="17%">
+                        <form [formGroup]="form">
+                                <mat-form-field class="MAT_FILD_WDH">
+                                        <mat-select placeholder="Property" 
+                                                (selectionChange)="FetchPropertyCode($event.value)"
+                                                formControlName="PropertyInfo" class="FX-FNT_SZ">
+                                                <mat-option *ngFor="let a of _Property" [value]="a.pmscustcode">
+                                                        {{a.hotelname}}</mat-option>
+                                        </mat-select>
+                                </mat-form-field>
+                                <div style="margin-top: -15px"
+                                        *ngIf="form.controls['PropertyInfo'].touched && !form.controls['PropertyInfo'].valid"
+                                        class="bounce">
+                                        <mat-error *ngIf="form.controls['PropertyInfo'].hasError('required') "
+                                                style="font-size: 13px; font-family: roboto">
+                                                Property is required
+                                        </mat-error>
+                                </div>
+                        </form>
+                </div>
+               
+        </div>
+
+</div>
