@@ -20,6 +20,8 @@ import { first } from 'rxjs/operators';
 export class GroupPropertyComponent implements OnInit {
   @Input() PropertyCode;
   @Output() initializeValue=new EventEmitter();
+  @Output() Propertydetails = new EventEmitter();
+  @Output() LoadCompanyDetails = new EventEmitter();
   selPropertyDetails: PropertyGroupDetails;
   GroupInfo: any;
   ReceiptData: any;
@@ -34,11 +36,8 @@ export class GroupPropertyComponent implements OnInit {
   _LocalCurrency:string;
   _HotelName: string;
   form : FormGroup;
-  //rcptList: any;
   PropertyModel: propertymodel;
   pmsGroupDetails:PropertyGroupDetails;
-  rcptList: ReceiptElement;
-  receiptDtl: any;
 //  groupcode: any;
 //  propertycode: any;
 //  obdate: any;
@@ -46,9 +45,6 @@ export class GroupPropertyComponent implements OnInit {
  // GroupModel: any;
 //  fATransactionModel: any;
 
-  dataSource=new MatTableDataSource<ReceiptElement>();
-  selection=new SelectionModel<ReceiptElement>(true, []);
- 
 
   constructor
     (
@@ -58,19 +54,16 @@ export class GroupPropertyComponent implements OnInit {
       private pmscodeService: GetPropertyService, 
       private listReceiptService: ListReceiptService,
       private fb: FormBuilder
-    ) { }
+    ) {}
 
     ngOnInit() {
       debugger;
-   // this.receiptDtl.listReceiptObservable.subscribe(receipt => receipt =  receipt)
     this.GetGroupCodeList();
-    this.GetReceiptData();
-    //this.listReceiptService.listReceiptObservable.subscribe(receiptDtl => this.receiptDtl = receiptDtl);
- 
+   //this.getPmsCustCode();
 
     this.form = this.fb.group
       ({
-        GroupInfo: ['', [Validators.required]]
+          GroupInfo: ['', [Validators.required]]
         , PropertyInfo: ['', [Validators.required]]
       });
       this.GetPropertyData();
@@ -79,7 +72,7 @@ export class GroupPropertyComponent implements OnInit {
 
   GetPropertyData()
   {
-    debugger;
+   
   //  if(this.form.valid)
   //  {
     this.pmscodeService.PmsCodeObservable.subscribe(
@@ -101,23 +94,11 @@ export class GroupPropertyComponent implements OnInit {
       this._DefaultCurrency=this.pmsGroupDetails.LocalCurrency;
        this.form.controls['GroupInfo'].patchValue(this._GroupCode);
        this.form.controls['PropertyInfo'].patchValue(this.PmsCustCode);
+       this.getPmsCustCode();
   // }
     }
 }
 
-GetReceiptData()
-  {
-    debugger;
-    this.receiptDtl.listReceiptObservable.subscribe(
-      (com)=> this.rcptList =com as ReceiptElement,
-      (err)=> console.log('error',err)
-      );  
-
-      if(this.rcptList != undefined )
-      {
-        this.ReceiptData = this.rcptList.ReceiptNumber;
-      }
-  }
 
   GetGroupCodeList() {
      this._commonServcie.GetGroupCodeListService()
@@ -129,24 +110,32 @@ GetReceiptData()
 
 
   FetchPropertyDetails(val: any) {
-    debugger;
     
     var _filter = this._Group.filter(x => x.groupcode == val)[0];
     this._GroupCode = _filter.groupcode;
     this._GroupName = _filter.groupname;
     this.GetPropertyCodeList(this._GroupCode);
+    
   }
 
   FetchPropertyCode(val: any) {
-    debugger;
    var _filter = this._Property.filter(x => x.pmscustcode == val)[0];
    this.PmsCustCode = _filter.pmscustcode;
    this._HotelName = _filter.hotelname
     console.info(this.PmsCustCode)
     //this.GetDefaultCurrency();
     this.pmscodeService.setPmsCustCode(val);
-    this.listReceiptService.setReceiptList(this.PropertyInfo);
-    this.GetListreceipt();
+    let PropertyInfo:any[]=[];
+    PropertyInfo.push({
+      "GroupCode": this._GroupCode,
+      "GroupName":this._GroupName,
+      "PropertyCode":this.PmsCustCode,
+      "PropertyName":this._HotelName,
+      "LocalCurrency":this._LocalCurrency,
+      "DefaultCurrency":this._DefaultCurrency
+    });
+    this.Propertydetails.emit(PropertyInfo);
+    this.LoadCompanyDetails.emit(PropertyInfo);
   }
 
 
@@ -158,64 +147,51 @@ GetReceiptData()
     });
   }
 
-  receiptDetails:ReceiptElement[]= [];
 
-  ReceiptList_Dtl(element:any,index:any)
+  GetDefaultCurrency() 
   {
-    this.rcptList[index]=element;
-   console.info("Receipt List ", this.rcptList)
-   
+     this._commonServcie.DefaultCurrencyService(this.PmsCustCode)
+    .map(res => res.json()).subscribe(
+        Response =>
+        {
+          this.DefaultCurInformation(Response);
+        }
+    );
   }
-
-
-  GetListreceipt() {
-    let _Model = {
-          "PmsCustCode": 5000,//this.PmsCustCode,
-          "DocumentType": "R",
-          "FromDate": "2019-01-01",
-          "ToDate": "2019-12-31",
-          "StatusType": "Open",
-          "ApplyFilter": 1,
-          "IsManual": 1,
-          "Company": "COM0001",
-          "PageNumber": 1,
-          "TotalRows": 5
-          };
-    this._commonServcie.GetListReceiptService(_Model)
-     .map(res => res.json()).subscribe((res: any) => {
-       console.log(res.response);
-      this.rcptList = res.response;
-     });
-     this.receiptDtl.setReceiptList(this.rcptList)
-    //  this.dataSource=new MatTableDataSource(this.rcptList);
-     this.dataSource.data.push(this.rcptList);
-     //this.rcptList.push(this.receiptDtl.getReceiptList);
-    }
-
-  
-
-   GetDefaultCurrency() 
+  DefaultCurInformation(res)
   {
-    debugger;
+     this._Currency = res.response;
+     this._DefaultCurrency = this._Currency[0].currencyCode; 
+     this._LocalCurrency = this._Currency[1].currencyCode; 
+     if(this._DefaultCurrency == "")
+     {
+      this._DefaultCurrency =this._LocalCurrency;
+     }
+    this.selPropertyDetails = {
+      "PmsCustCode": this.PmsCustCode,
+      "PropertyName": this._HotelName,
+      "GroupCode": this._GroupCode,
+      "GroupName": this._GroupName,
+      "LocalCurrency":this._LocalCurrency,
+      "DefaultCurrency":this._DefaultCurrency
+    };
+    this.pmscodeService.setPmsCustCode(this.selPropertyDetails);
+    let PropertyInfo:any[]=[];
+    PropertyInfo.push({
+      "GroupCode": this._GroupCode,
+      "GroupName":this._GroupName,
+      "PropertyCode":this.PmsCustCode,
+      "PropertyName": this._HotelName,
+      "LocalCurrency":this._LocalCurrency,
+      "DefaultCurrency":this._DefaultCurrency
+    });
+    this.Propertydetails.emit(PropertyInfo);
+    this.initializeValue.emit(this.selPropertyDetails);
+    this.LoadCompanyDetails.emit(PropertyInfo);
+
     
-   // setTimeout(() => {
-      this._commonServcie.DefaultCurrencyService(this.PmsCustCode)
-      .map(res => res.json()).subscribe((res: any) => this.SetPropertDetails(res));
-      
-    //}, 1000);
-  
-    // this.selPropertyDetails = {
-    //   "PmsCustCode": this.PmsCustCode,
-    //   "PropertyName": this._HotelName,
-    //   "GroupCode": this._GroupCode,
-    //   "GroupName": this._GroupName,
-    //   "LocalCurrency": this._LocalCurrency,
-    //   "DefaultCurrency": this._DefaultCurrency
-    // };
-    // this.pmscodeService.setPmsCustCode(this.selPropertyDetails)       
-  
+    
   }
-
 SetPropertDetails(Response)
 {
  // console.info("set", Response);
@@ -238,6 +214,13 @@ SetPropertDetails(Response)
   this.initializeValue.emit(this.selPropertyDetails);       
 }
 
+
+getPmsCustCode()
+{
+  debugger;
+  return this.PmsCustCode
+}
+
 }
 
 export interface PropertyGroupDetails {
@@ -250,22 +233,3 @@ export interface PropertyGroupDetails {
 }
 
 
-export interface ReceiptElement
-{
-
-  Select:boolean;
-  CompanyCode:string;
-  DocumentDate:string;
-  ReceiptNumber:string;
-  ReceiptDate:string;
-  BillNumber: string;
-  //ReceiptType:string;
-  TransactionNumber:string;
-  TransactionStatus:string;
-  TransactionCurrency:string;
-  Amount:number;
-  Balance: number;
-  AutoManual: string;
-  Actions:string;
-}
-const ReceiptData:ReceiptElement[]=[];
