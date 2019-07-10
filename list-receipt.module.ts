@@ -12,6 +12,5 @@ import { ListReceiptRoutingModule } from './list-receipt-routing.module';
     CommonModule,
     ListReceiptRoutingModule
   ]
- 
 })
 export class ListReceiptModule { }

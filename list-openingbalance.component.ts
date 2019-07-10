@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 import { MatTableDataSource, MatPaginator, MatSort} from '@angular/material';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {SelectionModel} from '@angular/cdk/collections';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-list-openingbalance',
@@ -14,10 +15,14 @@ export class ListOpeningbalanceComponent implements OnInit {
   Lenght_Date:any;
   Deselect_date:boolean=false;
   Date:any;
+  sub: any;
+  selected = new FormControl("0")
   selection1=new SelectionModel<OpenBalanceElement>(true,[]);
-  constructor(public _router:Router) { }
+  constructor(public router:Router,
+            public _router: ActivatedRoute) { }
 
   ngOnInit() {
+    this.sub = this._router.data.subscribe(v =>this.selected = new FormControl(v.value));
   }
   dataSource = new MatTableDataSource<OpenBalanceElement>(OpenBalanceList);
   isSelected()
@@ -58,7 +63,7 @@ drop(event: CdkDragDrop<string[]>) {
 }
   //reorder column in more option//
 createNew(){
-  this._router.navigateByUrl('/opening-balance');
+  this.router.navigateByUrl('/opening-balance');
 }
 selecteddata(data){
   this.Filter_Flag=true;
@@ -98,16 +103,12 @@ FixLenght_Date(value)
   {
     if(value=="View/Edit")
     {
-      this._router.navigateByUrl('/opening-balance');
+      this.router.navigateByUrl('/opening-balance');
     }
   }
   
 }
-const OpenBalanceList:OpenBalanceElement[]=[
-  {Company:'IDS',InvoiceNo:'123',InvoiceDate:'18 Jun 2019',InvoiceValue:'Text',Description:'Description',Actions:'Select'},
-  {Company:'IDS',InvoiceNo:'123',InvoiceDate:'18 Jun 2019',InvoiceValue:'Text',Description:'Description',Actions:'Select'},
-  {Company:'IDS',InvoiceNo:'123',InvoiceDate:'18 Jun 2019',InvoiceValue:'Text',Description:'Description',Actions:'Select'}
-];
+const OpenBalanceList:OpenBalanceElement[]=[];
 export interface OpenBalanceElement
 {
   Company:string;

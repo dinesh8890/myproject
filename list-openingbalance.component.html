@@ -1,9 +1,8 @@
 <!--First card start-->
-<div class="container" fxLayout fxLayout.xs="column" fxLayoutGap="20px" fxLayoutAlign="end" fxLayoutGap.xs="0">
-  <div fxflex="2%">
+  <div class="container" fxLayout fxLayout.xs="column" fxLayoutGap="20px" fxLayoutAlign="end" fxLayoutGap.xs="0">
     <button mat-raised-button class="Create_BTN" (click)="createNew()" style="margin-top: 10px;"><svg-icon src="../assets/Images/demo/Add.svg"></svg-icon> {{'CreateOpeningBalance'|translate}}</button>
   </div>
-</div><br>
+
 <!--First card end-->
 <!--Second card start-->
 <div class="container FX-MLR-TY" fxLaout="column" fxLayoutWrap fxLayoutGap="0.2">
@@ -74,4 +73,13 @@
 </mat-table>
 <mat-paginator [length]="5" [pageSize]="5" [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons>
 </mat-paginator>
+   
 <!--Third card end-->
+
+<br><br>
+<div class="container FX-BDR-FIX" fxLayout fxLayout.xs="column" fxLayoutGap="20px" fxLayoutAlign="end" fxLayoutGap.xs="0"  >
+  <div fxFlex="4%" >
+    <button mat-raised-button class="MAT-BTN-BAK" (click)="Back()">{{'Back'|translate}}</button>
+  </div>
+  <div fxFlex="2%">&nbsp;</div>
+</div>

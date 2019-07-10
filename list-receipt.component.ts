@@ -1,11 +1,15 @@
 import { Component, OnInit,ViewChild } from '@angular/core';
-import {Router} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 import { MatTableDataSource, MatPaginator, MatSort} from '@angular/material';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {SelectionModel} from '@angular/cdk/collections';
 import { CommonService } from 'src/app/services/Global/common.service';
 import { ListReceiptService } from 'src/app/services/list-receipt.service';
 import { GetPropertyService } from '../../services/get-property.service';
+import { TransactionListService } from 'src/app/services/transaction-list.service';
+import { FormControl } from '@angular/forms';
+import {ListReceiptinput } from 'src/app/Model/list-receipt.model';
+import {PropertyGroupDetails, GroupPropertyComponent } from 'src/app/components/group-property/group-property.component'
 
 @Component({
   selector: 'app-list-receipt',
@@ -13,11 +17,16 @@ import { GetPropertyService } from '../../services/get-property.service';
   styleUrls: ['./list-receipt.component.css']
 })
 export class ListReceiptComponent implements OnInit {
+  _PmsCustCode:number;
+  _GroupCode:string;
+  _GroupName: string;
+  _Currency: string;
+  _LocalCurrency:string;
+  loading_circle:boolean=true;
   Batch_Flag:boolean=false;
-  Receipttype:string="";
+  Receipttype:string;
   Status:string="";
   Date:string="";
-  receiptDtl: any;
   PmsCustCode: any;
   Filter_Flag:boolean=false;
   Deselect_type:boolean=false;
@@ -27,33 +36,63 @@ export class ListReceiptComponent implements OnInit {
   Lenght_Date:any;
   Length_Status:any;
   Length_Type:any;
-  rcptList: ReceiptElement;
+  rcptList: ReceiptElement[];
+  receiptDtl: any;
+  sub: any;
+  valtab:number;
+  pmsGroupDetails: PropertyGroupDetails;
+  listRecptInput: ListReceiptinput;
+  selected= new FormControl("0");
+  _Property: any;
+  PropertyInfo: any;
+  DocumentType: string;
+  FromDate: string;
+  ToDate: string;
+  StatusType: string;
+  ApplyFilter: boolean;
+  IsManual: boolean;
+  Company: string;
+  PageNumber: number;
+  TotalRows: number;
   //displayedColumns = ['Select', 'Company', 'Payment', 'ReceiptNo', 'ReceiptDate','ReceiptType','TransactionDate','TransactionStatus', 'TransactionCurrency', 'Received', 'Actions' ];
-  constructor(public _router:Router,
+  constructor(public router:Router,
+              private _router:ActivatedRoute,
               public _commonServcie: CommonService,
               private pmscodeService: GetPropertyService,
-              public listReceiptService: ListReceiptService) { }
-  dataSource = new MatTableDataSource<ReceiptElement>();
+              public listReceiptService: ListReceiptService,
+              public transactionlistService: TransactionListService,
+              public groupPropComponent: GroupPropertyComponent,
+              //public formctrl: FormControl
+              ) { }
+  dataSource = new MatTableDataSource<ReceiptElement>(this.rcptList);
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;  
   selection=new SelectionModel<ReceiptElement>(true,[]);
   ngOnInit() {
     debugger;
-    this.GetListreceipt();
+    //this.id = this.dataService.getAccountId();
+    //this.GetListreceipt();
+    this.PmsCustCode = this.pmscodeService.getPmsCustCode();
+   // this.PmsCustCode = this.groupPropComponent.PmsCustCode;
+    //this.PmsCustCode = GroupPropertyComponent.getPmsCustCode();
+    //this.FetchPropertyCode();
     //this.GetReceiptData();
-    this.getReceiptList();
-   // this.listReceiptService.listReceiptObservable.subscribe(receiptDtl => this.receiptDtl = receiptDtl);
+    //this.getReceiptList();
+  
+    //this.listReceiptService.listReceiptObservable.subscribe(receiptDtl => this.receiptDtl = receiptDtl)
+    //this.listReceiptService.listReceiptObservable.subscribe(receiptDtl => this.receiptDtl = receiptDtl);
+    this.sub = this._router.data.subscribe(v =>this.selected = new FormControl(v.value));
+    
   }
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
   createNew(){
-    this._router.navigateByUrl('/receipt-create');
+    this.router.navigateByUrl('/receipt-create');
   }
   
   _columns = [
-    {name: "Select",show: true,disabled:true},
     {name: "Company",show: true,disabled:false},
     {name: "Payment",show: true,disabled:true},      
     {name: "ReceiptNo",show: true,disabled:false}, 
@@ -180,31 +219,31 @@ drop(event: CdkDragDrop<string[]>) {
   }
   activeList=['Select','View/Edit','Void Receipt','Match Receipt','Print Receipt','Reprint Receipt','Send Receipt','Share Receipt Link'];
   
-  isSelected()
-    {
-      const numSelected = this.selection.selected.length;
-      const numRows = this.dataSource.data.length;
-      if(numSelected>1)
-      {
-        this.Batch_Flag=true;
-      }
-      else
-      {
-        this.Batch_Flag=false;
-      }
-      return numSelected === numRows;      
-    }
-    masterInvoiceToggle() 
-    {
-      this.isSelected() ?
-      this.selection.clear() :
-      this.dataSource.data.forEach(row => this.selection.select(row));
-    }
+  
+  selectedTab(data)
+  {
+    debugger;
+    this.valtab=data;
+    this.GetPropertyData(data);
+  }
 
     GetListreceipt() {
+      debugger;
+
+      var PmsCustCode = this._PmsCustCode;
+      
+      // this.listReceiptService.listReceiptObservable.subscribe(
+      //    (com)=> this.listRecptInput =com as ListReceiptinput,
+      //    (err)=> console.log('error',err)
+      //    );
+      //   if (this.pmsGroupDetails != undefined)
+      //   {
+      //      this.PmsCustCode=this.pmsGroupDetails.PmsCustCode;
+      //       alert(this.PmsCustCode);
+      //   }
       let _Model = {
-            "PmsCustCode": 5000,//this.PmsCustCode,
-            "DocumentType": "R",
+            "PmsCustCode": PmsCustCode,
+            "DocumentType": this.DocumentType,
             "FromDate": "2019-01-01",
             "ToDate": "2019-12-31",
             "StatusType": "Open",
@@ -214,65 +253,84 @@ drop(event: CdkDragDrop<string[]>) {
             "PageNumber": 1,
             "TotalRows": 5
             };
-      this._commonServcie.GetListReceiptService(_Model)
-       //.map(res => res.json()).subscribe((res: any) => {
-         //console.log("Response",  res.response);
+         this.transactionlistService.getReceiptList(_Model)
          .subscribe(Response => {
-        
-          return this.getReceiptListResponse(Response);
+            return this.getReceiptListResponse(Response);
         },
         error => {
             console.info("error")
         }); 
      
-         //this.rcptList = res.response;
-    // });
-     //this.receiptDtl.setReceiptList(this.rcptList)
-   }
- 
-   getReceiptListResponse(Response)
-   {
-    console.info("Receiptlist Res:",Response)
-    if (Response.status==1)
-    {
-      this.rcptList=Response.response
-      console.info("Receiptlist:",this.rcptList)
-      this.dataSource=new MatTableDataSource();
-      
+
+        
     }
-   }
-   
   
-getReceiptList(){
-debugger;
-  this.receiptDtl.listReceiptObservable.subscribe(
-    (receipt)=> this.rcptList = receipt as ReceiptElement,
-      (err)=> console.log('error',err)
-  )
-  console.log(this.rcptList);
-  this.dataSource = new MatTableDataSource();
-    this.selection=new SelectionModel<ReceiptElement>(true, []);
-    console.info ("Debit Records: ", this.rcptList)
-    // this.dataSource.paginator = this.debitpaginator;
-    // this.dataSource.sort = this.debitsort;
-    
-  }
-
-
+    getReceiptListResponse(Response)
+    {
+      debugger;
+      console.info("Receiptlist Res:",Response)
+      if (Response.status==1)
+      {
+        this.rcptList=Response.response
+        console.info("Receiptlist:",this.rcptList)
+        this.dataSource=new MatTableDataSource(this.rcptList);
+        
+      }
+   }
 
 
     changeaction(value)
     {
       if(value=="View/Edit")
       {
-        this._router.navigateByUrl('/receipt-create');
+        this.router.navigateByUrl('/receipt-create');
       }
     }
+
+
+  GetPropertyData(PropertInfo)
+  {
+    debugger;
+    if (PropertInfo != undefined && PropertInfo != null ){
+      this.loading_circle = true;
+      if ((PropertInfo[0].PropertyCode == '' || PropertInfo[0].PropertyCode == 0 || PropertInfo[0].PropertyCode == undefined)){
+        this._PmsCustCode = 0;
+        this.loading_circle =false;
+        return false;
+      } 
+      else if((PropertInfo[0].GroupCode == '' || PropertInfo[0].GroupCode == 0 || PropertInfo[0].GroupCode == undefined)){
+        this._GroupCode='';
+        this.loading_circle =false;
+        return false;
+      }
+      else
+      {
+        this._PmsCustCode=PropertInfo[0].PropertyCode;
+        this._GroupCode=PropertInfo[0].GroupCode;
+       // this._LocalCurrency=PropertInfo[0].PropertyCurrency;
+        setTimeout(() => {
+          this.loading_circle =false;
+        }, 1000);
+
+        this.GetListreceipt();
+       // return false;
+      }
+    }
+    else
+    {
+      this._GroupCode = '';
+      this._PmsCustCode = 0;
+      this._LocalCurrency = '';
+      this.loading_circle =false;
+    }
+  }
+  
+
 }
+
 export interface ReceiptElement
 {
-  Select:boolean;
-  CompanyCode:string;
+  CompanyName:string;
   DocumentDate:string;
   ReceiptNumber:string;
   ReceiptDate:string;
@@ -286,5 +344,7 @@ export interface ReceiptElement
   AutoManual: string;
   Actions:string;
 }
+
+
 const ReceiptData:ReceiptElement[]=[];
  

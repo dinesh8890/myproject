@@ -21,17 +21,20 @@ export class ListTransactionComponent implements OnInit {
   Type:string="";
   Status:string="";
   Date:string="";
+  Company: any;
   Filter_Flag:boolean=false;
   Deselect_invoice:boolean=false;
   Deselect_status:boolean=false;
   Deselect_date:boolean=false;
   Deselect_all:boolean=false;
+  ShowHide: boolean = false;
   Lenght_Date:any;
   Length_Status:any;
   Length_Type:any;
   valtab:number;
   transactionlist:transactionelement[];
   pmsGroupDetails:PropertyGroupDetails
+  trnListDetails: transactionlist;
   PmsCustCode:number;
   isInvoiceRecord:boolean=false;
   isActionNotSelected:boolean=true;
@@ -39,18 +42,24 @@ export class ListTransactionComponent implements OnInit {
   isCreditNoteRecord:boolean=false;
   isDebitNoteRecord:boolean=false;
   //Invoice End
+  _GroupCode: string;
+  _PmsCustCode: number=0;
+  _LocalCurrency: string;
+  loading_circle:boolean=true ;
   selected = new FormControl("0");
   sub: any;
+  NoOfRecords:number;
+  PageNumber: number;
   constructor(private pmscodeService:GetPropertyService,
     private transactionlistService:TransactionListService ,
     private _router:ActivatedRoute,
     private router:Router) { }
   ngOnInit() {
-  this.sub = this._router
-  .data
-  .subscribe(v =>this.selected = new FormControl(v.value));
-  ;
-  this.getTransactionList()
+    debugger;
+    //this.transactionlistService.transactionDetailObservable.subscribe(transactionDetailObservable => this.getTransactionList())
+  this.sub = this._router.data.subscribe(v =>this.selected = new FormControl(v.value));
+  
+  
   }
   selectedTab(data)
   {
@@ -103,25 +112,55 @@ export class ListTransactionComponent implements OnInit {
     'Cancel Statement','Send Reminder','Share Statement Link','Recurring Invoice'];
   CreditNoteactiveList=['Select','View/Edit','Void'];
 
+
+  GetPropertyData(PropertInfo)
+  {
+    debugger;
+    if (PropertInfo != undefined && PropertInfo != null ){
+      this.loading_circle = true;
+      if ((PropertInfo[0].PropertyCode == '' || PropertInfo[0].PropertyCode == 0 || PropertInfo[0].PropertyCode == undefined)){
+        this._PmsCustCode = 0;
+        this.loading_circle =false;
+        return false;
+      } 
+      else if((PropertInfo[0].GroupCode == '' || PropertInfo[0].GroupCode == 0 || PropertInfo[0].GroupCode == undefined)){
+        this._GroupCode='';
+        this.loading_circle =false;
+        return false;
+      }
+      else
+      {
+        this._PmsCustCode=PropertInfo[0].PropertyCode;
+        this._GroupCode=PropertInfo[0].GroupCode;
+        //this._LocalCurrency=PropertInfo[0].PropertyCurrency;
+        setTimeout(() => {
+          this.loading_circle =false;
+        }, 1000);
+        
+        this.getTransactionList();
+       // return false;
+       
+      }
+      
+    }
+    else
+    {
+      this._GroupCode = '';
+      this._PmsCustCode = 0;
+      this._LocalCurrency = '';
+      this.loading_circle =false;
+    }
+    // this.getTransactionList();
+  }
+  
     getTransactionList()
     {
-      debugger;
-      console.info("getTransactionList")
-      this.pmscodeService.PmsCodeObservable.subscribe(
-        (com)=> this.pmsGroupDetails =com as PropertyGroupDetails,
-        (err)=> console.log('error',err)
-        );  
-        console.info("pmsgroup :", this.pmsGroupDetails)
-      if (this.pmsGroupDetails!=undefined)
-      {
-        this.PmsCustCode=this.pmsGroupDetails.PmsCustCode;
-      
     
         debugger;
         let Model={
-          "PmsCustCode":this.PmsCustCode,
-          "NoOfRecords":50,
-          "PageNumber":1
+          "PmsCustCode":this._PmsCustCode,
+          "NoOfRecords":50,//this.NoOfRecords,
+          "PageNumber":1//this.PageNumber
         }
         let _Url=this.transactionlistService.getTransactionList(Model)
         //.map(res => res.json())
@@ -132,13 +171,10 @@ export class ListTransactionComponent implements OnInit {
         error => {
             console.info("error")
         }); 
-        // this.getInvoiceList()
-        // this.getReceiptList()
-      }
         
     }
     getTransactionListResponse(Response)
-  {
+    {
     debugger;
     console.info("Res:",Response)
     if (Response.status==1)
@@ -146,12 +182,16 @@ export class ListTransactionComponent implements OnInit {
       this.transactionlist=Response.response
       console.info("Res:",this.transactionlist)
       this.dataSource=new MatTableDataSource(this.transactionlist);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      this.ShowHide = true;
       
     }
 
   }
   
   selecteddata(data){
+    debugger;
     this.Filter_Flag=true;
     this.Deselect_invoice=true;
     this.Deselect_status=true;
@@ -160,10 +200,46 @@ export class ListTransactionComponent implements OnInit {
     this.Type=data.Type;
     this.Status=data.Status;
     this.Date=data.Date;
+    this.Company = data.Company;
     this.Length_Type=this.FixLength_Type(this.Type);
     this.Lenght_Date=this.FixLenght_Date((this.Date).length);
     this.Length_Status=this.FixLenght_Status((this.Status).length);
+    this.refreshDataSource(data);
+    // this.dataSource.filterPredicate =
+    //  (data: Element, filter: string) =>  (data.Company.indexOf(filter) != -1); 
   }
+
+  refreshDataSource(data)
+  {
+    // this.transactionlist.push();
+    // this.dataSource = new MatTableDataSource( this.transactionlist);
+     debugger;
+    // this.dataSource.filter = JSON.stringify(data); 
+    // this.dataSource.filterPredicate = (data, filter) => { const filterArray = JSON.parse(filter); 
+    //   return (filterArray['CompanyCode'] || data.Company.indexOf(filterArray['CompanyCode']) > -1);
+    //         //this.dataSource = filterArray;
+    //       };
+
+    // this.dataSource.filterPredicate =
+    //   (data:  , filters: string) => {
+    //     const matchFilter = [];
+    //     const filterArray = filters.split(',');
+    //     const columns = [data.company];
+    
+    //     // const columns = (<any>Object).values(data);
+        
+    
+    //     filterArray.forEach(filter => {
+    //       const customFilter = [];
+    //       columns.forEach(column => customFilter.push(column.toLowerCase().includes(filter)));
+    //       matchFilter.push(customFilter.some(Boolean)); // OR
+    //     });
+    //     return matchFilter.every(Boolean); // AND
+    //   }
+
+   
+  }
+
   FixLength_Type(value)
   {
     if(value=="All Transaction")
@@ -307,10 +383,19 @@ export class ListTransactionComponent implements OnInit {
       //this.setData.emit(element);
     }
   }
-  
+
+  applyFilter(filterValue: string)
+  {
+     
+      filterValue = filterValue.trim();
+      filterValue = filterValue.toLowerCase(); 
+      this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
 }
 export interface transactionelement
 {
+  [x: string]: any;
   CompanyCode:string;
   DocumentType:string;
   ReceiptDate:string;
@@ -322,4 +407,16 @@ export interface transactionelement
   Actions:string;
   isActionSelected:boolean;
   PmsCustCode:number;
+}
+
+export interface transactionlist{
+  PmsCustCode: number,
+  BookType: string, 
+  DocumentStartDate: string,
+  TransactionNumber: string, 
+  DocumentType: string, 
+  DocumentEndDate: string,
+  isRecentTransaction: boolean, 
+  NoOfRecords: number, 
+  PageNumber: number 
 }

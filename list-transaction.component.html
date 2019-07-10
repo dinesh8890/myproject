@@ -7,7 +7,8 @@
     </div>
   </div>
   <div>
-    <app-group-property (PropertyChange)="getTransactionList($event)"></app-group-property>
+    <!-- <app-group-property (PropertyChange)="getTransactionList()"></app-group-property> -->
+    <app-group-property (Propertydetails)="GetPropertyData($event)"></app-group-property>
   </div>
 </div>
 <!--First card end-->
@@ -17,8 +18,8 @@
     <mat-tab label="{{'AllTransaction'|translate}}"><br>
       <div class="container" fxLaout="column" fxLayoutWrap fxLayoutGap="0.2">        
         <div fxFlex="3%">&nbsp;</div>
-        <div fxFlex="5%">
-          <app-filter-transaction (transactionfilter)="selecteddata($event)"></app-filter-transaction>
+        <div fxFlex="5%" *ngIf="ShowHide">
+          <app-filter-transaction (LoadCompanyDetails)="GetPropertyData($event)" (transactionfilter)="selecteddata($event)"></app-filter-transaction>
         </div>                
         <div fxFlex={{Length_Type}} style="margin-top:10px" *ngIf="Filter_Flag && Deselect_invoice">
           <span class="Sel-Fil-Cap txt" (click)="Deselect_Invoice()">{{Type}}&nbsp;&#x2716;</span>                                
@@ -49,7 +50,7 @@
         <ng-container matColumnDef="Company">
           <mat-header-cell *matHeaderCellDef  mat-sort-header>{{'Company'|translate}}</mat-header-cell>
           <mat-cell *matCellDef="let element">
-          {{element.companyCode}}/{{element.companyName}}</mat-cell>
+          {{element.companyName}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="Type">
@@ -157,11 +158,11 @@
     </mat-tab>
 
     <mat-tab label="{{'InvoiceList'|translate}}">
-      <app-list-invoice></app-list-invoice>  
+      <app-list-invoice ></app-list-invoice>  
     </mat-tab>
 
     <mat-tab label="{{'ReceiptList'|translate}}">
-      <app-list-receipt></app-list-receipt>
+      <app-list-receipt (LoadCompanyDetails)="GetPropertyData($event)"></app-list-receipt>
     </mat-tab>
 
     <mat-tab label="{{'OpeningBalanceList'|translate}}">

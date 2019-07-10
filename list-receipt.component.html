@@ -1,16 +1,12 @@
 <!--First card start-->
-<div class="container" fxLayout fxLayout.xs="column" fxLayoutGap="20px" fxLayoutAlign="end" fxLayoutGap.xs="0">
-  <!-- <div>
-  <app-group-property></app-group-property>
-</div> -->
-  <div fxflex="2%">
-    <button mat-raised-button class="Create_BTN" (click)="createNew()" style="margin-top: 10px;"><svg-icon src="../assets/Images/demo/Add.svg"></svg-icon> {{'CreateReceipt'|translate}}</button>
-  </div>
+ <div class="container" fxLayout fxLayout.xs="column" fxLayoutGap="20px" fxLayoutAlign="end" fxLayoutGap.xs="0">
+  <button mat-raised-button class="Create_BTN" (click)="createNew()" style="margin-top: 10px;"><svg-icon src="../assets/Images/demo/Add.svg"></svg-icon> {{'CreateReceipt'|translate}}</button>
 </div>
 <!--First card end-->
+
 <!--Second card start-->
 <br>
-<div class="container FX-MLR-TY" fxLaout="column" fxLayoutWrap fxLayoutGap="0.2">  
+    <div class="container FX-MLR-TY" fxLaout="column" fxLayoutWrap fxLayoutGap="0.2">  
       <div fxFlex="5%">
         <app-filter-receipt (receiptfilter)="selecteddata($event)"></app-filter-receipt>
       </div>    
@@ -40,30 +36,15 @@
       </div>   
     </div>
       <mat-table #table [dataSource]="dataSource" matSort>
-        <ng-container matColumnDef="Select">              
-          <mat-header-cell *matHeaderCellDef [ngClass]="'cbCoumn'">
-            <mat-checkbox (change)="$event ? masterToggle() : null"
-              [checked]="isSelected()"
-              [indeterminate]="!isSelected()">
-            </mat-checkbox>
-          </mat-header-cell>
-          <mat-cell *matCellDef=" let row" [ngClass]="'cbCoumn'">
-            <br>
-            <mat-checkbox (click)="$event.stopPropagation()"
-              (change)="$event ? selection1.toggle(row) : null"
-              [checked]="selection1.isSelected(row)">
-            </mat-checkbox>  
-          </mat-cell>
-        </ng-container>
         <ng-container matColumnDef="Company">
-          <mat-header-cell *matHeaderCellDef  mat-sort-header style="margin-left:-80px;">{{'Company'|translate}}</mat-header-cell>
-          <mat-cell *matCellDef="let element" style="margin-left:-80px;">
-          {{element.companyCode}} </mat-cell>
+          <mat-header-cell *matHeaderCellDef  mat-sort-header>{{'Company'|translate}}</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+          {{element.companyName}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="Payment">
           <mat-header-cell *matHeaderCellDef mat-sort-header>{{'PaymentDate'|translate}}</mat-header-cell>
           <mat-cell *matCellDef="let element">
-          {{element.documentDate}} </mat-cell>
+          {{element.documentDate | date:'dd-MM-yyyy'}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="ReceiptNo">
           <mat-header-cell *matHeaderCellDef mat-sort-header>{{'ReceiptNo'|translate}}</mat-header-cell>
@@ -73,7 +54,7 @@
         <ng-container matColumnDef="ReceiptDate">
           <mat-header-cell *matHeaderCellDef mat-sort-header>{{'ReceiptDate'|translate}}</mat-header-cell>
           <mat-cell *matCellDef="let element">
-          {{element.receiptDate}} </mat-cell>
+          {{element.receiptDate | date:'dd-MM-yyyy'}} </mat-cell>
         </ng-container>
         <!-- <ng-container matColumnDef="ReceiptType">
           <mat-header-cell *matHeaderCellDef mat-sort-header>{{'ReceiptType'|translate}}</mat-header-cell>
@@ -83,7 +64,7 @@
         <ng-container matColumnDef="TransactionDate">
           <mat-header-cell *matHeaderCellDef mat-sort-header>{{'TransactionDate'|translate}}</mat-header-cell>
           <mat-cell *matCellDef="let element">
-          {{element.receiptDate}} </mat-cell>
+          {{element.receiptDate | date:'dd-MM-yyyy'}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="TransactionStatus">
           <mat-header-cell *matHeaderCellDef mat-sort-header>{{'TransactionStatus'|translate}}</mat-header-cell>
@@ -117,4 +98,10 @@
       </mat-table>
       <mat-paginator [length]="5" [pageSize]="5" [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons>
       </mat-paginator>
-  <!--Second card end-->
+<br><br>
+<div class="container FX-BDR-FIX" fxLayout fxLayout.xs="column" fxLayoutGap="20px" fxLayoutAlign="end" fxLayoutGap.xs="0"  >
+  <div fxFlex="4%" >
+    <button mat-raised-button class="MAT-BTN-BAK" (click)="Back()">{{'Back'|translate}}</button>
+  </div>
+  <div fxFlex="2%">&nbsp;</div>
+</div>
